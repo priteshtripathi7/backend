@@ -17,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
+// Connecting to database
 const connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
@@ -25,6 +26,7 @@ const connection = mysql.createConnection({
   });
 
 connection.connect();
+
 
 app.post('/login', (req,res) => {
     const user = req.body.username;
@@ -37,6 +39,18 @@ app.post('/login', (req,res) => {
                 res.send(true);
             else
                 res.send(false);
+        }  
+    });
+});
+
+
+app.post('/', (req,res) => {
+    const user = req.body.username;
+    connection.query(`SELECT * FROM data WHERE username = "${user} ORDER BY id"`, function (error, results, fields) {
+        if (error){
+            console.log(error);
+        }else{
+            res.send(results);
         }  
     });
 });
@@ -68,6 +82,6 @@ app.post('/signup', (req,res) => {
     });
 });
 
-app.post
+// Listening to port
 const port = process.env.PORT || 3000;
 app.listen(port);
