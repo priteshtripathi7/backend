@@ -44,9 +44,20 @@ app.post('/login', (req,res) => {
 });
 
 
+app.post('/deleteItem', (req, res) => {
+    const id = req.body.id;
+    console.log(id);
+    connection.query(`DELETE FROM data WHERE id = "${id}"`, function(error, results, fields) {
+        if(error){
+            console.log(error);
+        }
+    });
+});
+
 app.post('/', (req,res) => {
+    console.log('Someone called me');
     const user = req.body.username;
-    connection.query(`SELECT * FROM data WHERE username = "${user} ORDER BY id"`, function (error, results, fields) {
+    connection.query(`SELECT * FROM data WHERE username = "${user}" ORDER BY id`, function (error, results, fields) {
         if (error){
             console.log(error);
         }else{
@@ -54,6 +65,25 @@ app.post('/', (req,res) => {
         }  
     });
 });
+
+app.post('/insertItem', (req,res) => {
+    console.log('Inserting is being done.');
+    const user = req.body.username;
+    const id = req.body.id;
+    const value = req.body.value;
+    const des = req.body.des;
+    const type = req.body.type;
+    console.log(`${user} ${id} ${value} ${des} ${type}`);
+
+    connection.query(`INSERT INTO data VALUES ("${user}", "${id}", "${type}", "${des}", ${value})`, function(error, results, fields) {
+        if(error){
+            console.log(error);
+        }else{
+            res.send({message: 'Your data was inserted'});
+        }
+    })
+});
+
 
 app.post('/signup', (req,res) => {
     const user = req.body.username;
